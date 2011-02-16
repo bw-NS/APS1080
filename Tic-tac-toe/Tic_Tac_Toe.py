@@ -2,14 +2,17 @@
 class Tic_Tac_Toe:
     board = None
     moves = 0
+    terminate = False
 
     def __init__(self) -> None:
+        self.terminate = False
         self.board = [[' ']*3 for i in range(3)]
         self.print_board()
         self.moves = 0
 
     def clear(self) ->None:
         print("reseting board")
+        self.terminate = False
         self.board = [[' ']*3 for i in range(3)]
         self.print_board()
         self.moves=0
@@ -35,23 +38,32 @@ class Tic_Tac_Toe:
         return False
                 
 
-    def terminate(self, pos, symbol):
+    def term(self, pos, symbol):
         term = self.check_routes(pos, symbol)
         if term:
+            self.terminate = True
             print("player {} win!".format(symbol))
         elif self.moves == 9:
+            self.terminate = True
             print("Draw!")
         
+    def empty(self, pos):
+        return self.board[pos[0]][pos[1]]==' '
 
     def set_pos(self, pos, symbol):
+        if self.terminate:
+            print("Game end, restart to continue.")
+            return 
         if (symbol != 'X' and symbol != 'O'):
             print("invalid symbol")
             return 
         if (len(pos) != 2 or pos[0]<0 or pos[0]>=3 or pos[1]<0 or pos[1]>=3 or self.board[pos[0]][pos[1]]!=' '):
-            print("invalid pos")
+            print("invalid pos: ", pos)
             return
         self.board[pos[0]][pos[1]] = symbol
         self.moves+=1
         self.print_board()
-        self.terminate(pos, symbol)
+        self.term(pos, symbol)
+
+
         
